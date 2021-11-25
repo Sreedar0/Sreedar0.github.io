@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="./home.css" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link href="./home.js" />
+
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="nav-unorderd">
+                <li class="nav-list"><a class="active" href="#home">User Name</a></li>
+                <li class="nav-list-cart dropdown"><a class="cart-button" id="navCartButton">
+                        cart <div class="nav-button-span" id="cartItem"><span class="span-font">0</span></div>
+                        <div class="dropdown-content" id="dropdownItems">
+
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-list-logo"><a href="#contact">Shopping Cart</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section>
+        <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:20%">
+            <h3 class="w3-bar-item">Categories</h3>
+            <a href="#" class="w3-bar-item w3-button" id="mensWear">Mens wear</a>
+            <a href="#" class="w3-bar-item w3-button" id="womensWear">Womens wear</a>
+            <a href="#" class="w3-bar-item w3-button" id="KidsWear">Kids wear</a>
+        </div>
+
+        <!-- Page Content -->
+        <div style="margin-left:20%">
+
+            <div class="w3-container">
+                <h1 class="product-body-heading" id="productsHeading">Products</h1>
+            </div>
+            <div>
+                <div class="products-page" id="productsPage">
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <script>
+        let mensWearEl = document.getElementById("mensWear");
+        let womensWearEl = document.getElementById("womensWear");
+        let kidsWearEl = document.getElementById("KidsWear");
+        let cartItemEl = document.getElementById("cartItem");
+        let productsHeadingEl = document.getElementById("productsHeading");
+        let productsPageEl = document.getElementById("productsPage");
+
+        let navCartButtonEl = document.getElementById("navCartButton");
+        let dropdownItemsEl = document.getElementById("dropdownItems");
+
+
+        let products = [
+            { category: "mens", id: 0, src: "https://th.bing.com/th/id/R.00310ac8216fda7f5c8f2aba99ece127?rik=CsXDB5YxgkXbVQ&riu=http%3a%2f%2fwww.carlton-photography.co.uk%2fwp-content%2fuploads%2f2018%2f03%2fmenswear-and-studio-fashion-photographer-in-manchester.jpg&ehk=iGPeqHNXw%2bqNdraoq1PJ7c9SANfm4uuC1D5PL%2fUgRZw%3d&risl=&pid=ImgRaw&r=0", heading: "Mens Hoddi" },
+            { category: "mens", id: 1, src: "https://www.mensurbanclothing.com/wp-content/uploads/2015/01/Men-jacket-wear.jpg", heading: "Stylish Jacket" },
+            { category: "mens", id: 2, src: "https://sastideals.net/wp-content/uploads/2020/09/11518091176810-Roadster-Men-Black-White-Regular-Fit-Checked-Casual-Shirt-6491518091176603-1.jpg", heading: "Chines Shirt" },
+            { category: "mens", id: 3, src: "https://th.bing.com/th/id/R.0f2376b27c545291eba4af701c3c0cdb?rik=yGz%2fwgwTCpOPYA&riu=http%3a%2f%2fwww.inofashionstyle.com%2fwp-content%2fuploads%2ftrendy-mens-clothing-stylebybri-womens-%2b-men-designer-and-steet-style-fashions-47343.jpg&ehk=u%2fiVnK1n%2fYonps94SqRq1anCj5Ka%2fAyvJ0sQwl6OPp0%3d&risl=&pid=ImgRaw&r=0", heading: "Suite" },
+            { category: "mens", id: 4, src: "https://fasbest.com/wp-content/uploads/2017/06/Summer-Casual-Men-Clothing-Ideas-12.jpg", heading: "Roundneck T-shirt" },
+            { category: "mens", id: 5, src: "https://matalan-content.imgix.net/uploads/asset_file/asset_file/146898/1505898176.6206636-Mens-Department-Page3.jpg?ixlib=rails-2.1.4&auto=format%2Ccompress&cs=tinysrgb&w=708&dpr=2&q=30&s=20bee48a0cf14c348f26bec09a9a5b56", heading: "Full T-shirt" },
+            { category: "womens", id: 6, src: "https://www.prodirectselect.com/productimages/V3_1_Main/V3_1_Main_0278732.jpg", heading: "Nike T-shirt" },
+            { category: "womens", id: 7, src: "https://th.bing.com/th/id/OIP.dOCL15EIyZ3KEJ3G7-s88gHaKL?pid=ImgDet&rs=1", heading: "Designer Saree" },
+            { category: "womens", id: 8, src: "https://1.bp.blogspot.com/-ckKmzilX88o/U4wZ753EPfI/AAAAAAAAC0c/5GZ1dT9_pHk/s1600/Costumes-modern-Indian-fashion-01.jpg", heading: "Punjabi Dress" },
+            { category: "womens", id: 9, src: "https://www.lifenfashion.com/wp-content/uploads/2014/02/Traditional-And-Elegant-Indian-Clothing-Styles-2014-007.jpg", heading: "Long Frock" },
+            { category: "womens", id: 10, src: "https://th.bing.com/th/id/OIP.Y7o5pcfoZ5Pqp-fcwg1hFgHaJ3?pid=ImgDet&rs=1", heading: "Short Top" },
+            { category: "womens", id: 11, src: "https://i5.walmartimages.com/asr/ef8af552-949f-4976-8eef-b9773636679b_1.242a4290d884c2d4ebfdd7b6893a2913.jpeg", heading: "Women Top" },
+            { category: "kids", id: 12, src: "https://th.bing.com/th/id/OIP.YuWqXPMGu_u1HHVVuI1VcgHaLH?pid=ImgDet&rs=1", heading: "Half-Jacket" },
+            { category: "kids", id: 13, src: "https://n4.sdlcdn.com/imgs/a/o/j/Attitude-Kids-Wear-Hunk-And-SDL431765558-1-2de96.jpg", heading: "Casual Dress" },
+            { category: "kids", id: 14, src: "https://i.pinimg.com/originals/a1/97/d0/a197d0275cef373db2aac42730eaefa2.jpg", heading: "Frock" },
+            { category: "kids", id: 15, src: "https://th.bing.com/th/id/R.cdb237d15405d97cae25ec0a432fdd42?rik=Bpn7Ce1H8R4TYA&riu=http%3a%2f%2fcdn.shopclues.net%2fimages%2fdetailed%2f24254%2f81923057490857a1435918829_1440571248.jpg&ehk=d9GKUm3mc4FFYeO9gO%2bB5U8na9aqHAQ4nuA1854WtRo%3d&risl=&pid=ImgRaw&r=0", heading: "Double shirt" },
+            { category: "kids", id: 16, src: "https://i.pinimg.com/originals/66/24/cd/6624cd0d23130583faad9e6ce74e0e70.jpg", heading: "Blue Shirt" },
+            { category: "kids", id: 17, src: "https://i.pinimg.com/originals/e8/a6/ec/e8a6ecbe8ad5159423e6af74d31f1696.jpg", heading: "Jeans Shirt" },
+        ]
+
+        let cartObj = [];
+        let countInCart = 1;
+
+
+        cartItemEl.textContent = 0;
+
+        function addProductToCart(p) {
+
+
+
+
+
+            if (cartObj.length != 0) {
+
+                if (cartObj.includes(p)) {
+                    alert(p.heading +" already in the cart")
+                } else {
+                    let cart = cartItemEl.textContent;
+                    cart = parseInt(cart) + 1
+                    cartItemEl.textContent = cart
+
+
+                    cartObj.push(p)
+                    console.log(cartObj)
+
+                    let cartDiv = document.createElement("div");
+                    cartDiv.classList.add("cart-item");
+                    dropdownItemsEl.append(cartDiv);
+
+                    let cartImg = document.createElement("img");
+                    cartImg.src = p.src;
+                    cartImg.classList.add("cart-img")
+                    cartDiv.append(cartImg);
+
+                    let productQuantityDiv = document.createElement("div");
+                    productQuantityDiv.classList.add("product-quantity");
+                    cartDiv.append(productQuantityDiv);
+
+                    let cartProductName = document.createElement("h3");
+                    cartProductName.classList.add("cart-producy-name");
+                    cartProductName.textContent = p.heading;
+                    productQuantityDiv.append(cartProductName);
+
+                    let quantityDiv = document.createElement("div");
+                    quantityDiv.classList.add("quantity-div");
+                    productQuantityDiv.append(quantityDiv);
+
+                    let quantityPara = document.createElement("p");
+                    quantityPara.classList.add("quantity-para");
+                    quantityPara.textContent = "Quantity :";
+                    quantityDiv.append(quantityPara);
+
+                    let countDiv = document.createElement("div");
+                    countDiv.classList.add("count-div");
+                    quantityDiv.append(countDiv);
+
+
+                    let countSpan = document.createElement("span");
+                    countSpan.classList.add("count-span");
+                    countSpan.textContent = " - ";
+                    countSpan.addEventListener("click", function subClick() {
+                        if (parseInt(countSpan1.textContent) <= 1) {
+                            countSpan1.textContent = 1;
+                        } else {
+                            countSpan1.textContent = parseInt(countSpan1.textContent) - 1
+                        }
+                    });
+                    quantityPara.append(countSpan);
+
+                    const countSpan1 = document.createElement("span");
+                    countSpan1.classList.add("count-span1");
+                    countSpan1.id = "countSpan1";
+                    countSpan1.textContent = "1";
+                    quantityPara.append(countSpan1);
+                    let countInCart = parseInt(countSpan1.textContent);
+
+
+                    createAndAppendProduct(p, countInCart);
+
+
+                    let countSpan2 = document.createElement("span");
+                    countSpan2.classList.add("count-span2");
+                    countSpan2.textContent = " + ";
+                    countSpan2.addEventListener("click", function addClick() {
+
+                        countSpan1.textContent = parseInt(countSpan1.textContent) + 1;
+
+                    });
+                    quantityPara.append(countSpan2);
+
+                    let cartButton = document.createElement("button");
+                    cartButton.classList.add("cart-remove-button");
+                    cartButton.textContent = "Remove";
+                    cartButton.addEventListener("click", function removeOf() {
+
+                        dropdownItemsEl.removeChild(cartDiv);
+                        cartItemEl.textContent = parseInt(cartItemEl.textContent) - 1;
+
+                    })
+                    cartDiv.append(cartButton);
+
+
+                    let lineBreak = document.createElement("br");
+                    cartDiv.append(lineBreak);
+                }
+
+
+
+            } else {
+                let cart = cartItemEl.textContent;
+                cart = parseInt(cart) + 1
+                cartItemEl.textContent = cart
+
+
+                cartObj.push(p)
+                console.log(cartObj)
+
+                let cartDiv = document.createElement("div");
+                cartDiv.classList.add("cart-item");
+                dropdownItemsEl.append(cartDiv);
+
+                let cartImg = document.createElement("img");
+                cartImg.src = p.src;
+                cartImg.classList.add("cart-img")
+                cartDiv.append(cartImg);
+
+                let productQuantityDiv = document.createElement("div");
+                productQuantityDiv.classList.add("product-quantity");
+                cartDiv.append(productQuantityDiv);
+
+                let cartProductName = document.createElement("h3");
+                cartProductName.classList.add("cart-producy-name");
+                cartProductName.textContent = p.heading;
+                productQuantityDiv.append(cartProductName);
+
+                let quantityDiv = document.createElement("div");
+                quantityDiv.classList.add("quantity-div");
+                productQuantityDiv.append(quantityDiv);
+
+                let quantityPara = document.createElement("p");
+                quantityPara.classList.add("quantity-para");
+                quantityPara.textContent = "Quantity :";
+                quantityDiv.append(quantityPara);
+
+                let countDiv = document.createElement("div");
+                countDiv.classList.add("count-div");
+                quantityDiv.append(countDiv);
+
+
+                let countSpan = document.createElement("span");
+                countSpan.classList.add("count-span");
+                countSpan.textContent = " - ";
+                countSpan.addEventListener("click", function subClick() {
+                    if (parseInt(countSpan1.textContent) <= 1) {
+                        countSpan1.textContent = 1;
+                    } else {
+                        countSpan1.textContent = parseInt(countSpan1.textContent) - 1
+                    }
+                });
+                quantityPara.append(countSpan);
+
+                const countSpan1 = document.createElement("span");
+                countSpan1.classList.add("count-span1");
+                countSpan1.id = "countSpan1";
+                countSpan1.textContent = "1";
+                quantityPara.append(countSpan1);
+                let countInCart = parseInt(countSpan1.textContent);
+
+
+                createAndAppendProduct(p, countInCart);
+
+
+                let countSpan2 = document.createElement("span");
+                countSpan2.classList.add("count-span2");
+                countSpan2.textContent = " + ";
+                countSpan2.addEventListener("click", function addClick() {
+
+                    countSpan1.textContent = parseInt(countSpan1.textContent) + 1;
+
+                });
+                quantityPara.append(countSpan2);
+
+                let cartButton = document.createElement("button");
+                cartButton.classList.add("cart-remove-button");
+                cartButton.textContent = "Remove";
+                cartButton.addEventListener("click", function removeOf() {
+
+                    dropdownItemsEl.removeChild(cartDiv);
+                    cartItemEl.textContent = parseInt(cartItemEl.textContent) - 1;
+
+                })
+                cartDiv.append(cartButton);
+
+
+                let lineBreak = document.createElement("br");
+                cartDiv.append(lineBreak);
+            }
+
+
+
+
+
+
+
+
+
+
+        }
+
+        function createAndAppendProduct(p, countInCart) {
+
+
+
+
+
+
+
+            navCartButtonEl.addEventListener("click", function onNavCart() {
+                dropdownItemsEl.classList.toggle("dropdown-content");
+            })
+
+            // addProductToCart()
+
+
+
+            let container = document.createElement("div");
+            container.classList.add("product-card");
+            productsPageEl.append(container)
+
+            let imgEl = document.createElement("IMG");
+            imgEl.src = p.src;
+            imgEl.classList.add("product-image")
+            container.append(imgEl);
+
+            let headingEl = document.createElement("h1");
+            headingEl.textContent = p.heading;
+            headingEl.classList.add("product-heading");
+            container.append(headingEl);
+
+
+
+            let buttonEl = document.createElement("button");
+            buttonEl.textContent = "Add to cart";
+            buttonEl.classList.add("product-button");
+            buttonEl.addEventListener("click", function addToCart(countInCart) {
+
+
+                // console.log(c.id)
+
+
+
+                addProductToCart(p)
+
+
+
+            });
+
+            container.append(buttonEl);
+
+        };
+
+
+
+
+
+        function mens() {
+            productsHeadingEl.textContent = "Mens wear";
+            productsPageEl.textContent = "";
+
+            for (let p of products) {
+                if (p.category === "mens") {
+                    createAndAppendProduct(p)
+                }
+
+            }
+
+        }
+        mensWearEl.addEventListener("click", mens);
+
+        function womens() {
+            productsHeadingEl.textContent = "Womens wear";
+            productsPageEl.textContent = "";
+
+            for (let p of products) {
+                if (p.category === "womens") {
+                    createAndAppendProduct(p)
+                }
+
+            }
+
+        }
+
+        womensWearEl.addEventListener("click", womens);
+
+        function kids() {
+            productsHeadingEl.textContent = "Kids wear";
+            productsPageEl.textContent = "";
+
+            for (let p of products) {
+                if (p.category === "kids") {
+                    createAndAppendProduct(p)
+                }
+
+            }
+
+        }
+
+        kidsWearEl.addEventListener("click", kids);
+
+        for (let p of products) {
+            createAndAppendProduct(p)
+        }
+
+
+
+    </script>
+</body>
+
+</html>
